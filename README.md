@@ -1,5 +1,67 @@
-# Vue 3 + TypeScript + Vite
+# JS Trainer
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Веб-приложение для практики JavaScript: выбор темы, ответы на вопросы (в том числе по фрагментам кода) и сохранение прогресса в браузере.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Возможности
+
+- Каталог тем с поиском по названию и описанию и фильтром по категории
+- Страница темы с последовательной тренировкой вопросов
+- Показ фрагмента кода, вариантов ответа и пояснения после выбора
+- Сохранение результата прохождения темы в `localStorage`
+- Отображение прогресса на главной странице
+- Клиентская маршрутизация: главная, тема по slug (`/topics/event-loop`) и страница 404
+
+Прогресс хранится локально в браузере. Темы и вопросы задаются исходными данными в репозитории.
+
+## Стек
+
+- Vue 3 (Composition API, `<script setup>`)
+- TypeScript
+- Vue Router
+- Pinia
+- Vite
+- Tailwind CSS
+
+## Структура проекта
+
+```text
+src/
+  components/   UI-компоненты: шапка, карточка темы, тренажёр вопросов
+  data/         Темы и вопросы
+  router/       Маршруты приложения
+  stores/       Pinia-хранилище прогресса
+  types/        TypeScript-типы
+  views/        Страницы: главная, тема, 404
+  App.vue       Корневой макет
+  main.ts       Точка входа, Pinia, роутер, загрузка прогресса
+```
+
+Тема идентифицируется стабильным `slug` (например, `event-loop`). Название темы используется только для отображения. Вопросы и сохранённые результаты связаны с темой через `topicSlug`.
+
+## Требования
+
+- Node.js 20 или новее
+- npm
+
+## Установка и запуск
+
+```bash
+npm install
+npm run dev
+```
+
+Команда `npm run dev` запускает локальный сервер разработки Vite. Адрес будет показан в терминале (обычно `http://localhost:5173`).
+
+## Production-сборка
+
+```bash
+npm run build
+```
+
+Сборка проверяет типы (`vue-tsc`) и формирует статику в каталоге `dist/`.
+
+Просмотр собранного приложения:
+
+```bash
+npm run preview
+```

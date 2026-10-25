@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Topic } from '../types/topic'
-
+import { getQuestionCountByTopic } from '../data/questions'
 
 const props = defineProps<{
-  topic : Topic
+  topic: Topic
 }>()
 
 const emit = defineEmits<{
   start: [topic: Topic]
 }>()
+
+const questionCount = computed(() => getQuestionCountByTopic(props.topic.slug))
 </script>
 
 <template>
@@ -24,12 +27,9 @@ const emit = defineEmits<{
     </p>
 
     <div class="flex items-center justify-between text-sm text-slate-500">
-      <span>{{ topic.questions }} вопросов</span>
+      <span>{{ questionCount }} вопросов</span>
 
-      <button
-        class="text-emerald-400 hover:text-emerald-300"
-        @click="emit('start', topic)"
-      >
+      <button class="text-emerald-400 hover:text-emerald-300" @click="emit('start', topic)">
         Начать →
       </button>
     </div>

@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
@@ -7,10 +6,10 @@ import AppHeader from '../components/AppHeader.vue'
 <template>
   <AppHeader />
 
-  <main class="mx-auto flex min-h-[70vh] max-w-5xl flex-col items-center justify-center px-6 text-center">
-    <p class="mb-4 text-sm font-semibold uppercase tracking-widest text-emerald-400">
-      Error 404
-    </p>
+  <main
+    class="mx-auto flex min-h-[70vh] max-w-5xl flex-col items-center justify-center px-6 text-center"
+  >
+    <p class="mb-4 text-sm font-semibold uppercase tracking-widest text-emerald-400">Error 404</p>
 
     <h1 class="mb-4 text-5xl font-bold">Страница не найдена</h1>
 

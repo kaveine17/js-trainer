@@ -1,6 +1,6 @@
 export type Question = {
   id: number
-  topicTitle: string
+  topicSlug: string
   prompt: string
   code?: string
   options: string[]

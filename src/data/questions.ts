@@ -3,7 +3,7 @@ import type { Question } from '../types/question'
 export const questions: Question[] = [
   {
     id: 1,
-    topicTitle: 'Event Loop',
+    topicSlug: 'event-loop',
     prompt: 'Что выведет этот код?',
     code: `console.log('A')
 
@@ -12,19 +12,14 @@ setTimeout(() => console.log('B'), 0)
 Promise.resolve().then(() => console.log('C'))
 
 console.log('D')`,
-    options: [
-      'A, B, C, D',
-      'A, D, C, B',
-      'A, C, D, B',
-      'A, D, B, C',
-    ],
+    options: ['A, B, C, D', 'A, D, C, B', 'A, C, D, B', 'A, D, B, C'],
     correctAnswer: 1,
     explanation:
       'Сначала выполняется синхронный код: A и D. Затем выполняется микрозадача Promise с выводом C. После неё выполняется колбэк таймера с выводом B.',
   },
   {
     id: 2,
-    topicTitle: 'Event Loop',
+    topicSlug: 'event-loop',
     prompt: 'Что такое микрозадачи в JavaScript?',
     options: [
       'Функции, которые всегда выполняются первыми',
@@ -38,21 +33,16 @@ console.log('D')`,
   },
   {
     id: 3,
-    topicTitle: 'Promises',
+    topicSlug: 'promises',
     prompt: 'Что вернёт вызов then() у Promise?',
-    options: [
-      'Всегда обычное значение',
-      'Новый Promise',
-      'Только undefined',
-      'Объект Event Loop',
-    ],
+    options: ['Всегда обычное значение', 'Новый Promise', 'Только undefined', 'Объект Event Loop'],
     correctAnswer: 1,
     explanation:
       'Метод then() возвращает новый Promise. Его результат зависит от возвращаемого значения обработчика или от ошибки, возникшей в нём.',
   },
   {
     id: 4,
-    topicTitle: 'Promises',
+    topicSlug: 'promises',
     prompt: 'Что произойдёт, если обработчик then() выбросит ошибку?',
     options: [
       'Ошибка будет проигнорирована',
@@ -66,7 +56,7 @@ console.log('D')`,
   },
   {
     id: 5,
-    topicTitle: 'JavaScript Basics',
+    topicSlug: 'javascript-basics',
     prompt: 'Какой результат выражения typeof null?',
     options: ['null', 'undefined', 'object', 'boolean'],
     correctAnswer: 2,
@@ -75,7 +65,7 @@ console.log('D')`,
   },
   {
     id: 6,
-    topicTitle: 'JavaScript Basics',
+    topicSlug: 'javascript-basics',
     prompt: 'Что выведет этот код?',
     code: `const value = 5
 
@@ -85,14 +75,17 @@ if (true) {
 }
 
 console.log(value)`,
-    options: [
-      '10 и 10',
-      '5 и 5',
-      '10 и 5',
-      'Ошибка из-за повторного объявления',
-    ],
+    options: ['10 и 10', '5 и 5', '10 и 5', 'Ошибка из-за повторного объявления'],
     correctAnswer: 2,
     explanation:
       'У const блочная область видимости. Внутри if объявлена отдельная переменная value со значением 10, а снаружи остаётся переменная со значением 5.',
   },
 ]
+
+export function getQuestionsByTopicSlug(topicSlug: string): Question[] {
+  return questions.filter((question) => question.topicSlug === topicSlug)
+}
+
+export function getQuestionCountByTopic(topicSlug: string): number {
+  return getQuestionsByTopicSlug(topicSlug).length
+}

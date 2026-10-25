@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import type { Topic } from '../types/topic'
 import type { Question } from '../types/question'
+import type { TopicProgress } from '../types/progress'
 
 const props = defineProps<{
   topic: Topic
@@ -9,13 +10,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  exit: [],
-  complete: [result: {
-    topicTitle: string
-    totalQuestions: number
-    correctAnswers: number
-    completedAt: string
-  }]
+  exit: []
+  complete: [result: TopicProgress]
 }>()
 
 const currentIndex = ref(0)
@@ -45,7 +41,7 @@ function selectAnswer(index: number) {
 function nextQuestion() {
   if (currentIndex.value === props.questions.length - 1) {
     emit('complete', {
-      topicTitle: props.topic.title,
+      topicSlug: props.topic.slug,
       totalQuestions: props.questions.length,
       correctAnswers: correctAnswers.value,
       completedAt: new Date().toISOString(),
@@ -71,23 +67,15 @@ function restart() {
           {{ topic.title }}
         </p>
 
-        <h2 class="text-xl font-semibold">
-          Тренировка вопросов
-        </h2>
+        <h2 class="text-xl font-semibold">Тренировка вопросов</h2>
       </div>
 
-      <button
-        class="text-sm text-slate-400 transition hover:text-white"
-        @click="emit('exit')"
-      >
+      <button class="text-sm text-slate-400 transition hover:text-white" @click="emit('exit')">
         Выйти
       </button>
     </div>
 
-    <div
-      v-if="questions.length === 0"
-      class="py-8 text-center text-slate-400"
-    >
+    <div v-if="questions.length === 0" class="py-8 text-center text-slate-400">
       Для этой темы пока нет вопросов.
     </div>
 
@@ -96,9 +84,7 @@ function restart() {
         Тренировка завершена
       </p>
 
-      <h3 class="mb-3 text-3xl font-bold">
-        {{ correctAnswers }} из {{ questions.length }}
-      </h3>
+      <h3 class="mb-3 text-3xl font-bold">{{ correctAnswers }} из {{ questions.length }}</h3>
 
       <p class="mb-8 text-slate-400">
         Правильных ответов: {{ correctAnswers }} из {{ questions.length }}.
@@ -153,23 +139,17 @@ function restart() {
           :key="index"
           class="w-full rounded-xl border p-4 text-left transition"
           :class="{
-            'border-slate-700 hover:border-slate-500':
-              selectedAnswer === null,
+            'border-slate-700 hover:border-slate-500': selectedAnswer === null,
             'border-emerald-400 bg-emerald-400/10':
-              selectedAnswer !== null &&
-              index === currentQuestion.correctAnswer,
+              selectedAnswer !== null && index === currentQuestion.correctAnswer,
             'border-red-400 bg-red-400/10':
-              selectedAnswer === index &&
-              selectedAnswer !== currentQuestion.correctAnswer,
-            'cursor-default':
-              selectedAnswer !== null,
+              selectedAnswer === index && selectedAnswer !== currentQuestion.correctAnswer,
+            'cursor-default': selectedAnswer !== null,
           }"
           :disabled="selectedAnswer !== null"
           @click="selectAnswer(index)"
         >
-          <span class="mr-3 text-slate-500">
-            {{ String.fromCharCode(65 + index) }}.
-          </span>
+          <span class="mr-3 text-slate-500"> {{ String.fromCharCode(65 + index) }}. </span>
 
           {{ option }}
         </button>
@@ -182,16 +162,10 @@ function restart() {
         <p
           class="mb-2 font-semibold"
           :class="
-            selectedAnswer === currentQuestion.correctAnswer
-              ? 'text-emerald-400'
-              : 'text-red-400'
+            selectedAnswer === currentQuestion.correctAnswer ? 'text-emerald-400' : 'text-red-400'
           "
         >
-          {{
-            selectedAnswer === currentQuestion.correctAnswer
-              ? 'Правильно!'
-              : 'Не совсем!'
-          }}
+          {{ selectedAnswer === currentQuestion.correctAnswer ? 'Правильно!' : 'Не совсем!' }}
         </p>
 
         <p class="text-sm leading-7 text-slate-400">
@@ -202,11 +176,7 @@ function restart() {
           class="mt-5 rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300"
           @click="nextQuestion"
         >
-          {{
-            currentIndex === questions.length - 1
-              ? 'Посмотреть результат'
-              : 'Следующий вопрос'
-          }}
+          {{ currentIndex === questions.length - 1 ? 'Посмотреть результат' : 'Следующий вопрос' }}
         </button>
       </div>
     </div>

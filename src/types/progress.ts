@@ -1,5 +1,6 @@
 export type TopicProgress = {
-  topicTitle: string
+  topicSlug?: string
+  topicTitle?: string
   totalQuestions: number
   correctAnswers: number
   completedAt: string

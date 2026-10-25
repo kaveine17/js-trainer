@@ -3,20 +3,17 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import TopicCard from '../components/TopicCard.vue'
-import { topics } from '../data/topics'
+import { getTopicTitleBySlug, topics } from '../data/topics'
 import { questions } from '../data/questions'
 import { useProgressStore } from '../stores/progress'
+import type { TopicProgress } from '../types/progress'
 
 const router = useRouter()
 
 const progressStore = useProgressStore()
 
-progressStore.loadProgress()
-
 const searchQuery = ref('')
-const selectedCategory = ref<'Все темы' | 'JavaScript' | 'Асинхронность'>(
-  'Все темы',
-)
+const selectedCategory = ref<'Все темы' | 'JavaScript' | 'Асинхронность'>('Все темы')
 
 const totalTopics = computed(() => topics.length)
 const totalQuestions = computed(() => questions.length)
@@ -26,12 +23,10 @@ const filteredTopics = computed(() => {
 
   return topics.filter((topic) => {
     const matchesSearch =
-      topic.title.toLowerCase().includes(query) ||
-      topic.description.toLowerCase().includes(query)
+      topic.title.toLowerCase().includes(query) || topic.description.toLowerCase().includes(query)
 
     const matchesCategory =
-      selectedCategory.value === 'Все темы' ||
-      topic.category === selectedCategory.value
+      selectedCategory.value === 'Все темы' || topic.category === selectedCategory.value
 
     return matchesSearch && matchesCategory
   })
@@ -39,6 +34,18 @@ const filteredTopics = computed(() => {
 
 function openTopic(topic: { slug: string }) {
   router.push(`/topics/${topic.slug}`)
+}
+
+function resultKey(result: TopicProgress, index: number): string {
+  return result.topicSlug ?? `unlinked-${index}`
+}
+
+function resultTitle(result: TopicProgress): string {
+  if (result.topicSlug) {
+    return getTopicTitleBySlug(result.topicSlug) ?? result.topicTitle ?? result.topicSlug
+  }
+
+  return result.topicTitle ?? 'Неизвестная тема'
 }
 </script>
 
@@ -56,8 +63,8 @@ function openTopic(topic: { slug: string }) {
       </h1>
 
       <p class="max-w-2xl text-lg leading-8 text-slate-400">
-        Предсказывай результат выполнения кода, проверяй свои знания
-        и разбирайся в сложных темах шаг за шагом.
+        Предсказывай результат выполнения кода, проверяй свои знания и разбирайся в сложных темах
+        шаг за шагом.
       </p>
     </section>
 
@@ -110,11 +117,11 @@ function openTopic(topic: { slug: string }) {
 
       <div v-else class="grid gap-3 sm:grid-cols-2">
         <article
-          v-for="result in progressStore.results"
-          :key="result.topicTitle"
+          v-for="(result, index) in progressStore.results"
+          :key="resultKey(result, index)"
           class="rounded-xl border border-slate-800 bg-slate-900 p-5"
         >
-          <h3 class="mb-2 font-semibold">{{ result.topicTitle }}</h3>
+          <h3 class="mb-2 font-semibold">{{ resultTitle(result) }}</h3>
 
           <p class="text-sm text-slate-400">
             Правильных ответов:
@@ -122,9 +129,11 @@ function openTopic(topic: { slug: string }) {
           </p>
 
           <p class="mt-2 text-sm text-emerald-400">
-            {{ result.totalQuestions
-              ? Math.round(result.correctAnswers / result.totalQuestions * 100)
-              : 0 }}% правильных ответов
+            {{
+              result.totalQuestions
+                ? Math.round((result.correctAnswers / result.totalQuestions) * 100)
+                : 0
+            }}% правильных ответов
           </p>
         </article>
       </div>
